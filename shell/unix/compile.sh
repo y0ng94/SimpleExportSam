@@ -1,4 +1,4 @@
-#!/bin.sh
+#!/bin/sh
 
 JAVA_HOME=/usr/bin
 BASEPATH=/app/xtorm/test/COM_SimpleExportSam_20221101
