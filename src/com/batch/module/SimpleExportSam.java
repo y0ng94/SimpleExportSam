@@ -138,7 +138,7 @@ public class SimpleExportSam {
 				return;
 			}
 
-			LogUtil.info(logger, "Completed {0} write data of database ( {1}s )", selectList.size(), CommonUtil.getTimeElapsed(time));
+			LogUtil.info(logger, "Completed write data of database ( {0}s )", CommonUtil.getTimeElapsed(time));
 
 			// 잠시 쉬기
 			int sleep = Config.getIntConfig("SLEEP");
@@ -179,7 +179,7 @@ public class SimpleExportSam {
 	 * @return 조회 결과 리스트
 	 * @throws SQLException
 	 */
-	private List<String[]> select(Connection con, String query, String[] param) throws SQLException {
+	public List<String[]> select(Connection con, String query, String[] param) throws SQLException {
 		List<String[]> selectList = new ArrayList<>();
 
 		try (PreparedStatement statement = con.prepareStatement(query)) {
@@ -227,6 +227,11 @@ public class SimpleExportSam {
 			if (dataList == null || dataList.size() == 0) { break; }
 
 			String[] dataArray = dataList.remove(0);
+			for (int i = 0; i<dataArray.length; i++) {
+				if (dataArray[i] == null) { dataArray[i] = Config.getConfig("OUTPUT.NULL"); }
+				dataArray[i] = Config.getConfig("OUTPUT.LEFT") + dataArray[i] + Config.getConfig("OUTPUT.RIGHT");
+			}
+
 			if (dataArray != null && dataArray.length != 0) {
 				String writeString = Arrays.asList(dataArray).stream().collect(Collectors.joining(Config.getConfig("OUTPUT.DELIMITER")));
 				Path writeFilePath = null;
